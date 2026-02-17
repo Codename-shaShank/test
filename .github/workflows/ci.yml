@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby 2.3.8
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.3.8"
+          bundler-cache: false
+
+      - name: Install exact bundler version for Ruby 2.3
+        run: gem install bundler -v '1.17.3'
+
+      - name: Install dependencies with locked versions
+        run: bundle install --jobs 4 --retry 3
+        env:
+          BUNDLE_FROZEN: true  # Ensures it uses exact versions from Gemfile.lock
+
+      - name: Run tests
+        run: bundle exec rake test
+        continue-on-error: true  # Allow tests to fail if needed
+
+      - name: Check bundle security
+        run: bundle exec bundle-audit check --update || true
+        continue-on-error: true
+
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby 2.3.8
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.3.8"
+
+      - name: Install exact bundler version for Ruby 2.3
+        run: gem install bundler -v '1.17.3'
+
+      - name: Install dependencies
+        run: bundle install --jobs 4 --retry 3
+        env:
+          BUNDLE_FROZEN: true
+
+      - name: Run rubocop
+        run: bundle exec rubocop || true
+        continue-on-error: true

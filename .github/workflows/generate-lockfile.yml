@@ -1,0 +1,37 @@
+name: Generate Gemfile.lock
+
+on:
+  workflow_dispatch:  # Can be triggered manually
+
+jobs:
+  generate-lockfile:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby 2.3.8
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.3.8"
+          bundler-cache: false
+
+      - name: Install exact bundler version for Ruby 2.3
+        run: gem install bundler -v '1.17.3'
+
+      - name: Generate Gemfile.lock
+        run: bundle lock
+
+      - name: Commit Gemfile.lock
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add Gemfile.lock
+          git diff --staged --quiet || git commit -m "Generate Gemfile.lock with locked old versions"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}

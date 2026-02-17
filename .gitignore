@@ -1,0 +1,37 @@
+# Dependencies
+.bundle/
+vendor/bundle/
+
+# Ignore bundler config except for frozen settings
+/.bundle/*
+!/.bundle/config
+
+# Logs
+*.log
+log/
+
+# Temp files
+tmp/
+*.tmp
+*.swp
+
+# Database
+*.sqlite3
+*.db
+
+# Environment variables
+.env
+.env.local
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IMPORTANT: DO NOT ignore Gemfile.lock
+# We need this to lock old gem versions for CI/CD
+# !Gemfile.lock

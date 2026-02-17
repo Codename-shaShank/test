@@ -3,11 +3,11 @@ updates:
   - package-ecosystem: "bundler"
     directory: "/"           # Gemfile at repo root
     schedule:
-      interval: "weekly"     # Changed to weekly (less frequent)
+      interval: "daily"      # Run daily to check for updates
       time: "09:00"
       timezone: "UTC"
-    open-pull-requests-limit: 0  # Disabled: no automatic PRs
+    open-pull-requests-limit: 5  # Allow up to 5 PRs
     labels:
       - "dependabot"
       - "dependencies"
-    # Keep old versions - Dependabot won't create PRs due to open-pull-requests-limit: 0
+      - "security"
